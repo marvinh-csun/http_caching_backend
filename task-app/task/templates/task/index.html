@@ -1,0 +1,118 @@
+{% extends "layout/base.html" %}
+{% block title %}Task List{% endblock %}
+
+{% block html_head %}
+
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <p class="h1">The Task List</p>
+
+    <a class="btn btn-primary" href="/task/new"> + Create A New Task </a>
+
+    <div class="row">
+    <div class="col-md-6 col-sm-12">
+    <table class="table">
+        <caption> TODO Tasks </caption>
+        <thead>
+            <tr>
+                <th> Task ID</th>
+                <th> Task Name</th>
+                <th> Task Description </th>
+                <th> Due Date </th>
+                <th> Mark Completed </th>
+                <th> Move to Trash </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            {% if task['completed_at'] is none and task['deleted_at'] is none %}
+            <tr>
+                <td><a href="{{url_for('task_blueprint.edit_task', task_id=task['id'])}}"> {{task['id']}} </a> </td>
+                <td>{{ task['task_name'] }}</td>
+                <td>
+                    {{ task['task_description'] }}
+                </td>
+                <td>{{ task['due_date']}} </td>
+                <td>
+                    <form method="POST" action="/task/update">
+                        <input hidden name="task_id" value="{{task['id']}}" />
+                        <input hidden name="api_method" value="mark_completed" />
+                        <button class="btn btn-sm btn-secondary" type="submit"> Mark Completed </button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="/task/update">
+                        <input hidden name="task_id" value="{{task['id']}}" />
+                        <input hidden name="api_method" value="mark_deleted" />
+                        <button class="btn btn-sm btn-danger" type="submit"> Move To Trash </button>
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+
+    <div class="col-md-6 col-sm-12">
+    <table class="table">
+        <caption> Completed Tasks </caption>
+        <thead>
+            <tr>
+                <th> Task ID</th>
+                <th> Task Name</th>
+                <th> Task Description </th>
+                <th> Completion Date </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            {% if task['completed_at'] is not none and task['deleted_at'] is none %}
+            <tr>
+                <td>{{ task['id'] }}</td>
+                <td>{{ task['task_name'] }}</td>
+                <td>{{ task['task_description'] }}</td>
+                <td>{{ task['completed_at'] }} </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+    <div class="col-md-6 col-sm-12">
+        <table class="table">
+            <caption> Deleted Tasks </caption>
+            <thead>
+                <tr>
+                    <th> Task ID</th>
+                    <th> Task Name</th>
+                    <th> Task Description </th>
+                    <th> Deletion Date </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                {% if task['deleted_at'] is not none %}
+                <tr>
+                    <td>{{ task['id'] }}</td>
+                    <td>{{ task['task_name'] }}</td>
+                    <td>{{ task['task_description'] }}</td>
+                    <td>{{ task['deleted_at'] }} </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+   
+    </div>
+</div>
+<script type="text/javascript">
+    
+</script>
+    {% endblock %}

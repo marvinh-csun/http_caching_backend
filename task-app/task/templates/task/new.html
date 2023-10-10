@@ -1,0 +1,57 @@
+{% extends  "layout/base.html" %}
+{% block title %}Task List{% endblock %}
+
+{% block html_head %}
+  
+{% endblock %}
+
+{% block content %}
+    <p class="h4"> Create a new task </p>
+    <form method="POST" action="/task/new">
+        <div class="form-group">
+            <label for="task_name"> Task Name </label>
+            <input required minlength="10" maxlength="128"  name="task_name" class="form-control" placeholder="Task Name" id="task_name"/>
+        </div>
+
+    
+        <div class="form-group mt-4">
+            <label for="task_description"> Task Description </label>
+            <textarea required name="task_description" class="form-control" id="task_description" placeholder="Task Description" rows="4"></textarea>
+        </div>
+
+            <p class="text-info" id="local_time"> </p>
+            <div class="form-group mt-4">
+            <label for="due_date"> Due Date (UTC TIME )</label>
+            
+            
+            <input
+                class="form-control"
+                type="datetime-local"
+                id="due_date"
+                name="due_date"
+                value="{{ min_date }}"
+                min="{{ min_date }}"
+            />
+            </div>
+
+        <button class="btn btn-primary mt-4" type="submit"> Submit Task </button>
+    </form>
+
+    <script type="text/javascript">
+        var min_date = "{{min_date}}"
+        var due_date = document.getElementById('due_date');
+        var local_time = document.getElementById('local_time');
+        
+        var date_obj = new Date(`${min_date}Z`);
+        local_time.textContent = `${date_obj.toLocaleDateString()} ${date_obj.toLocaleTimeString()}`;
+        
+        due_date.addEventListener("change", (event) => {
+            var date_obj = new Date(`${event.target.value}Z`);
+            local_time.textContent = `${date_obj.toLocaleDateString()} ${date_obj.toLocaleTimeString()}`;
+        });
+
+    </script>
+
+{% endblock %}
+
+
